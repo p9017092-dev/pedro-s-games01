@@ -1,0 +1,522 @@
+
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Receitas de Crafting - Minecraft</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: #f8fafc;
+      line-height: 1.6;
+    }
+
+    header {
+      background: linear-gradient(90deg, #15803d, #22c55e);
+      padding: 40px 20px;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    }
+
+    header h1 { font-size: 2.8rem; margin-bottom: 10px; }
+    header p { font-size: 1.2rem; }
+
+    nav {
+      background: #1e293b;
+      padding: 14px 20px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+    }
+
+    nav a {
+      color: #4ade80;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 0.95rem;
+      padding: 6px 14px;
+      border-radius: 8px;
+      transition: background 0.2s;
+    }
+
+    nav a:hover { background: #334155; }
+
+    .container {
+      max-width: 1400px;
+      margin: auto;
+      padding: 25px;
+    }
+
+    .search-box { margin-bottom: 30px; }
+    .search-box input {
+      width: 100%;
+      padding: 15px;
+      border-radius: 12px;
+      border: none;
+      font-size: 1rem;
+      background: #1e293b;
+      color: white;
+    }
+    .search-box input::placeholder { color: #94a3b8; }
+
+    .category {
+      background: #1e293b;
+      border-radius: 20px;
+      margin-bottom: 35px;
+      padding: 25px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    }
+
+    .category h2 {
+      color: #4ade80;
+      margin-bottom: 20px;
+      font-size: 2rem;
+      border-bottom: 2px solid #4ade80;
+      padding-bottom: 10px;
+    }
+
+    .recipe-card {
+      background: #334155;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 25px;
+      display: flex;
+      gap: 24px;
+      align-items: center;
+      transition: transform 0.2s;
+    }
+
+    .recipe-card:hover { transform: scale(1.01); }
+
+    .recipe-card h3 {
+      color: #86efac;
+      font-size: 1.4rem;
+      margin-bottom: 8px;
+    }
+
+    .recipe-card p { margin-bottom: 6px; }
+
+    .recipe-info { flex: 1; }
+
+    /* Grade de crafting 3x3 */
+    .craft-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 56px);
+      grid-template-rows: repeat(3, 56px);
+      gap: 4px;
+      background: #1a1a2e;
+      padding: 8px;
+      border-radius: 10px;
+      border: 2px solid #4ade80;
+      flex-shrink: 0;
+    }
+
+    .craft-cell {
+      width: 56px;
+      height: 56px;
+      background: #2d2d44;
+      border: 2px solid #555;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      position: relative;
+    }
+
+    .craft-cell.filled { border-color: #4ade80; background: #1e3a2e; }
+
+    .arrow {
+      font-size: 2rem;
+      color: #4ade80;
+      flex-shrink: 0;
+    }
+
+    .result-cell {
+      width: 70px;
+      height: 70px;
+      background: #1e3a2e;
+      border: 3px solid #4ade80;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.2rem;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .result-qty {
+      position: absolute;
+      bottom: 3px;
+      right: 6px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      color: #fff;
+      text-shadow: 1px 1px 2px #000;
+    }
+
+    .tag {
+      display: inline-block;
+      background: #0f172a;
+      color: #4ade80;
+      border-radius: 6px;
+      padding: 2px 10px;
+      font-size: 0.85rem;
+      margin-top: 6px;
+      margin-right: 4px;
+    }
+
+    .ingredients {
+      margin-top: 8px;
+      font-size: 0.95rem;
+      color: #cbd5e1;
+    }
+
+    .ingredients span { color: #86efac; font-weight: bold; }
+
+    footer {
+      text-align: center;
+      padding: 25px;
+      color: #94a3b8;
+    }
+
+    @media (max-width: 700px) {
+      .recipe-card { flex-direction: column; align-items: flex-start; }
+      .craft-grid { grid-template-columns: repeat(3, 48px); grid-template-rows: repeat(3, 48px); }
+      .craft-cell { width: 48px; height: 48px; font-size: 1.3rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>⚒️ Receitas de Crafting</h1>
+  <p>As principais receitas do Minecraft Java Edition</p>
+</header>
+
+<nav>
+  <a href="#ferramentas">🔧 Ferramentas</a>
+  <a href="#armas">⚔️ Armas</a>
+  <a href="#armaduras">🛡️ Armaduras</a>
+  <a href="#blocos">🧱 Blocos</a>
+  <a href="#utilitarios">🎒 Utilitários</a>
+  <a href="coisas_de_minecraft.html">📜 Comandos</a>
+</nav>
+
+<div class="container">
+
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="Pesquisar receita..." />
+  </div>
+
+  <!-- FERRAMENTAS -->
+  <div class="category" id="ferramentas">
+    <h2>🔧 Ferramentas</h2>
+
+    <!-- Picareta de Diamante -->
+    <div class="recipe-card">
+      <div class="craft-grid">
+        <div class="craft-cell filled">💎</div><div class="craft-cell filled">💎</div><div class="craft-cell filled">💎</div>
+        <div class="craft-cell"></div><div class="craft-cell filled">🪵</div><div class="craft-cell"></div>
+        <div class="craft-cell"></div><div class="craft-cell filled">🪵</div><div class="craft-cell"></div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="result-cell">⛏️<span class="result-qty">1</span></div>
+      <div class="recipe-info">
+        <h3>⛏️ Picareta de Diamante</h3>
+        <div class="ingredients">Ingredientes: <span>3 Diamantes</span> + <span>2 Paus</span></div>
+        <p>A melhor picareta do jogo. Minera qualquer bloco rapidamente.</p>
+        <span class="tag">Mineração</span><span class="tag">Durabilidade: 1561</span>
+      </div>
+    </div>
+
+    <!-- Pá de Ferro -->
+    <div class="recipe-card">
+      <div class="craft-grid">
+        <div class="craft-cell"></div><div class="craft-cell filled">🔩</div><div class="craft-cell"></div>
+        <div class="craft-cell"></div><div class="craft-cell filled">🪵</div><div class="craft-cell"></div>
+        <div class="craft-cell"></div><div class="craft-cell filled">🪵</div><div class="craft-cell"></div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="result-cell">🪣<span class="result-qty">1</span></div>
+      <div class="recipe-info">
+        <h3>🪣 Pá de Ferro</h3>
+        <div class="ingredients">Ingredientes: <span>1 Lingote de Ferro</span> + <span>2 Paus</span></div>
+        <p>Essencial para escavar terra, areia e cascalho rapidamente.</p>
+        <span class="tag">Escavação</span><span class="tag">Durabilidade: 250</span>
+      </div>
+    </div>
+
+    <!-- Machado de Pedra -->
+    <div class="recipe-card">
+      <div class="craft-grid">
+        <div class="craft-cell filled">🪨</div><div class="craft-cell filled">🪨</div><div class="craft-cell"></div>
+        <div class="craft-cell filled">🪨</div><div class="craft-cell filled">🪵</div><div class="craft-cell"></div>
+        <div class="craft-cell"></div><div class="craft-cell filled">🪵</div><div class="craft-cell"></div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="result-cell">🪓<span class="result-qty">1</span></div>
+      <div class="recipe-info">
+        <h3>🪓 Machado de Pedra</h3>
+        <div class="ingredients">Ingredientes: <span>3 Pedras</span> + <span>2 Paus</span></div>
+        <p>Corta madeira rápido e causa bom dano em combate.</p>
+        <span class="tag">Madeira</span><span class="tag">Combate</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ARMAS -->
+  <div class="category" id="armas">
+    <h2>⚔️ Armas</h2>
+
+    <!-- Espada de Ferro -->
+    <div class="recipe-card">
+      <div class="craft-grid">
+        <div class="craft-cell"></div><div class="craft-cell filled">🔩</div><div class="craft-cell"></div>
+        <div class="craft-cell"></div><div class="craft-cell filled">🔩</div><div class="craft-cell"></div>
+        <div class="craft-cell"></div><div class="craft-cell filled">🪵</div><div class="craft-cell"></div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="result-cell">⚔️<span class="result-qty">1</span></div>
+      <div class="recipe-info">
+        <h3>⚔️ Espada de Ferro</h3>
+        <div class="ingredients">Ingredientes: <span>2 Lingotes de Ferro</span> + <span>1 Pau</span></div>
+        <p>Causa 6 de dano por ataque. Boa opção para o início do jogo.</p>
+        <span class="tag">Combate</span><span class="tag">Dano: 6❤️</span>
+      </div>
+    </div>
+
+    <!-- Arco -->
+    <div class="recipe-card">
+      <div class="craft-grid">
+        <div class="craft-cell"></div><div class="craft-cell filled">🪵</div><div class="craft-cell filled">🧵</div>
+        <div class="craft-cell filled">🪵</div><div class="craft-cell"></div><div class="craft-cell filled">🧵</div>
+        <div class="craft-cell"></div><div class="craft-cell filled">🪵</div><div class="craft-cell filled">🧵</div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="result-cell">🏹<span class="result-qty">1</span></div>
+      <div class="recipe-info">
+        <h3>🏹 Arco</h3>
+        <div class="ingredients">Ingredientes: <span>3 Paus</span> + <span>3 Fios</span></div>
+        <p>Ataque à distância. Pode ser encantado com Poder, Chama e Infinidade.</p>
+        <span class="tag">Ranged</span><span class="tag">Dano: até 10❤️</span>
+      </div>
+    </div>
+
+    <!-- Tridente -->
+    <div class="recipe-card">
+      <div class="craft-grid">
+        <div class="craft-cell"></div><div class="craft-cell filled">🔱</div><div class="craft-cell"></div>
+        <div class="craft-cell filled">🔱</div><div class="craft-cell filled">🔱</div><div class="craft-cell"></div>
+        <div class="craft-cell"></div><div class="craft-cell filled">🔱</div><div class="craft-cell"></div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="result-cell">🔱<span class="result-qty">1</span></div>
+      <div class="recipe-info">
+        <h3>🔱 Tridente</h3>
+        <div class="ingredients">Ingredientes: <span>Dropado por Afogados</span> (não craftável)</div>
+        <p>Arma poderosa para combate aquático. Pode ser arremessado ou usado com Lealdade.</p>
+        <span class="tag">Aquático</span><span class="tag">Dano: 9❤️</span><span class="tag">Drop raro</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ARMADURAS -->
+  <div class="category" id="armaduras">
+    <h2>🛡️ Armaduras</h2>
+
+    <!-- Capacete de Diamante -->
+    <div class="recipe-card">
+      <div class="craft-grid">
+        <div class="craft-cell filled">💎</div><div class="craft-cell filled">💎</div><div class="craft-cell filled">💎</div>
+        <div class="craft-cell filled">💎</div><div class="craft-cell"></div><div class="craft-cell filled">💎</div>
+        <div class="craft-cell"></div><div class="craft-cell"></div><div class="craft-cell"></div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="result-cell">⛑️<span class="result-qty">1</span></div>
+      <div class="recipe-info">
+        <h3>⛑️ Capacete de Diamante</h3>
+        <div class="ingredients">Ingredientes: <span>5 Diamantes</span></div>
+        <p>Fornece 3 pontos de armadura. Pode ser encantado com Proteção, Respiração, etc.</p>
+        <span class="tag">Defesa</span><span class="tag">Durabilidade: 363</span>
+      </div>
+    </div>
+
+    <!-- Peitoral de Ferro -->
+    <div class="recipe-card">
+      <div class="craft-grid">
+        <div class="craft-cell filled">🔩</div><div class="craft-cell"></div><div class="craft-cell filled">🔩</div>
+        <div class="craft-cell filled">🔩</div><div class="craft-cell filled">🔩</div><div class="craft-cell filled">🔩</div>
+        <div class="craft-cell filled">🔩</div><div class="craft-cell filled">🔩</div><div class="craft-cell filled">🔩</div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="result-cell">🦺<span class="result-qty">1</span></div>
+      <div class="recipe-info">
+        <h3>🦺 Peitoral de Ferro</h3>
+        <div class="ingredients">Ingredientes: <span>8 Lingotes de Ferro</span></div>
+        <p>A peça de armadura que mais protege. Fornece 6 pontos de armadura.</p>
+        <span class="tag">Defesa</span><span class="tag">Armadura: 6🛡️</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOCOS -->
+  <div class="category" id="blocos">
+    <h2>🧱 Blocos</h2>
+
+    <!-- Bloco de Diamante -->
+    <div class="recipe-card">
+      <div class="craft-grid">
+        <div class="craft-cell filled">💎</div><div class="craft-cell filled">💎</div><div class="craft-cell filled">💎</div>
+        <div class="craft-cell filled">💎</div><div class="craft-cell filled">💎</div><div class="craft-cell filled">💎</div>
+        <div class="craft-cell filled">💎</div><div class="craft-cell filled">💎</div><div class="craft-cell filled">💎</div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="result-cell">🔷<span class="result-qty">1</span></div>
+      <div class="recipe-info">
+        <h3>🔷 Bloco de Diamante</h3>
+        <div class="ingredients">Ingredientes: <span>9 Diamantes</span></div>
+        <p>Compacta diamantes para armazenar com eficiência. Pode ser desfeito no crafting.</p>
+        <span class="tag">Armazenamento</span><span class="tag">Decoração</span>
+      </div>
+    </div>
+
+    <!-- Bancada de Trabalho -->
+    <div class="recipe-card">
+      <div class="craft-grid">
+        <div class="craft-cell filled">🪵</div><div class="craft-cell filled">🪵</div><div class="craft-cell"></div>
+        <div class="craft-cell filled">🪵</div><div class="craft-cell filled">🪵</div><div class="craft-cell"></div>
+        <div class="craft-cell"></div><div class="craft-cell"></div><div class="craft-cell"></div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="result-cell">🪚<span class="result-qty">1</span></div>
+      <div class="recipe-info">
+        <h3>🪚 Bancada de Trabalho</h3>
+        <div class="ingredients">Ingredientes: <span>4 Tábuas de Madeira</span></div>
+        <p>O primeiro item que todo jogador deve craftar. Abre a grade de crafting 3x3.</p>
+        <span class="tag">Essencial</span><span class="tag">Primeiro crafting</span>
+      </div>
+    </div>
+
+    <!-- Fornalha -->
+    <div class="recipe-card">
+      <div class="craft-grid">
+        <div class="craft-cell filled">🪨</div><div class="craft-cell filled">🪨</div><div class="craft-cell filled">🪨</div>
+        <div class="craft-cell filled">🪨</div><div class="craft-cell"></div><div class="craft-cell filled">🪨</div>
+        <div class="craft-cell filled">🪨</div><div class="craft-cell filled">🪨</div><div class="craft-cell filled">🪨</div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="result-cell">🔥<span class="result-qty">1</span></div>
+      <div class="recipe-info">
+        <h3>🔥 Fornalha</h3>
+        <div class="ingredients">Ingredientes: <span>8 Pedras (Cobblestone)</span></div>
+        <p>Usada para fundir minérios e cozinhar alimentos. Essencial na sobrevivência.</p>
+        <span class="tag">Fundição</span><span class="tag">Culinária</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- UTILITÁRIOS -->
+  <div class="category" id="utilitarios">
+    <h2>🎒 Utilitários</h2>
+
+    <!-- Tocha -->
+    <div class="recipe-card">
+      <div class="craft-grid">
+        <div class="craft-cell"></div><div class="craft-cell filled">🪨</div><div class="craft-cell"></div>
+        <div class="craft-cell"></div><div class="craft-cell filled">🪵</div><div class="craft-cell"></div>
+        <div class="craft-cell"></div><div class="craft-cell"></div><div class="craft-cell"></div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="result-cell">🕯️<span class="result-qty">4</span></div>
+      <div class="recipe-info">
+        <h3>🕯️ Tocha</h3>
+        <div class="ingredients">Ingredientes: <span>1 Carvão/Carvão Vegetal</span> + <span>1 Pau</span></div>
+        <p>Ilumina o ambiente e impede a geração de mobs em cavernas.</p>
+        <span class="tag">Iluminação</span><span class="tag">Rende 4</span>
+      </div>
+    </div>
+
+    <!-- Cama -->
+    <div class="recipe-card">
+      <div class="craft-grid">
+        <div class="craft-cell"></div><div class="craft-cell"></div><div class="craft-cell"></div>
+        <div class="craft-cell filled">🧶</div><div class="craft-cell filled">🧶</div><div class="craft-cell filled">🧶</div>
+        <div class="craft-cell filled">🪵</div><div class="craft-cell filled">🪵</div><div class="craft-cell filled">🪵</div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="result-cell">🛏️<span class="result-qty">1</span></div>
+      <div class="recipe-info">
+        <h3>🛏️ Cama</h3>
+        <div class="ingredients">Ingredientes: <span>3 Lãs</span> + <span>3 Tábuas de Madeira</span></div>
+        <p>Permite dormir para passar a noite e definir seu ponto de reaparecimento.</p>
+        <span class="tag">Sobrevivência</span><span class="tag">Spawn Point</span>
+      </div>
+    </div>
+
+    <!-- Baú -->
+    <div class="recipe-card">
+      <div class="craft-grid">
+        <div class="craft-cell filled">🪵</div><div class="craft-cell filled">🪵</div><div class="craft-cell filled">🪵</div>
+        <div class="craft-cell filled">🪵</div><div class="craft-cell"></div><div class="craft-cell filled">🪵</div>
+        <div class="craft-cell filled">🪵</div><div class="craft-cell filled">🪵</div><div class="craft-cell filled">🪵</div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="result-cell">📦<span class="result-qty">1</span></div>
+      <div class="recipe-info">
+        <h3>📦 Baú</h3>
+        <div class="ingredients">Ingredientes: <span>8 Tábuas de Madeira</span></div>
+        <p>Armazena até 27 stacks de itens. Dois baús juntos formam um baú duplo (54 slots).</p>
+        <span class="tag">Armazenamento</span><span class="tag">27 slots</span>
+      </div>
+    </div>
+
+    <!-- Bússola -->
+    <div class="recipe-card">
+      <div class="craft-grid">
+        <div class="craft-cell"></div><div class="craft-cell filled">🔩</div><div class="craft-cell"></div>
+        <div class="craft-cell filled">🔩</div><div class="craft-cell filled">🔴</div><div class="craft-cell filled">🔩</div>
+        <div class="craft-cell"></div><div class="craft-cell filled">🔩</div><div class="craft-cell"></div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="result-cell">🧭<span class="result-qty">1</span></div>
+      <div class="recipe-info">
+        <h3>🧭 Bússola</h3>
+        <div class="ingredients">Ingredientes: <span>4 Lingotes de Ferro</span> + <span>1 Pó de Redstone</span></div>
+        <p>Aponta sempre para o spawn original do mundo. Essencial para não se perder.</p>
+        <span class="tag">Navegação</span><span class="tag">Spawn</span>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<footer>
+  Guia de Receitas de Crafting do Minecraft • <a href="coisas_de_minecraft.html" style="color:#4ade80;">← Ver Comandos</a>
+</footer>
+
+<script>
+  const searchInput = document.getElementById('searchInput');
+  searchInput.addEventListener('keyup', function () {
+    const filter = searchInput.value.toLowerCase();
+    const cards = document.querySelectorAll('.recipe-card');
+    cards.forEach(card => {
+      card.style.display = card.innerText.toLowerCase().includes(filter) ? 'flex' : 'none';
+    });
+  });
+</script>
+
+</body>
+</html>
