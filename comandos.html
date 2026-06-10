@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WikiCraft - Lista de Comandos</title>
+  <style>
+    /* Reset e Variáveis de Cores (Mesmo padrão do index.html) */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    :root {
+      --bg-principal: #0b0f19;
+      --bg-card-dark: #1e293b;
+      --bg-card-light: #334155;
+      --verde-neon: #4ade80;
+      --azul-neon: #38bdf8;
+      --texto-claro: #f8fafc;
+      --texto-mutado: #94a3b8;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg-principal);
+      color: var(--texto-claro);
+      line-height: 1.6;
+    }
+
+    /* Cabeçalho */
+    header {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      padding: 50px 20px;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+      border-bottom: 3px solid var(--azul-neon);
+    }
+
+    header h1 { 
+      font-size: 3rem; 
+      margin-bottom: 10px; 
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+    }
+    header p { font-size: 1.2rem; opacity: 0.9; }
+
+    /* Menu de Navegação Sticky */
+    nav {
+      background: var(--bg-card-dark);
+      padding: 15px 20px;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      border-bottom: 1px solid #2f3e56;
+    }
+
+    nav a {
+      color: var(--azul-neon);
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 0.95rem;
+      padding: 8px 16px;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+    }
+
+    nav a:hover { 
+      background: #253346; 
+      color: #fff;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      padding: 30px 20px;
+    }
+
+    /* Barra de Pesquisa */
+    .search-box { margin-bottom: 40px; }
+    .search-box input {
+      width: 100%;
+      padding: 16px;
+      border-radius: 12px;
+      border: 2px solid #2f3e56;
+      font-size: 1.1rem;
+      background: var(--bg-card-dark);
+      color: white;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    }
+    .search-box input:focus {
+      outline: none;
+      border-color: var(--azul-neon);
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
+    }
+    .search-box input::placeholder { color: var(--texto-mutado); }
+
+    /* Seções de Categorias */
+    .category {
+      background: var(--bg-card-dark);
+      border-radius: 16px;
+      margin-bottom: 40px;
+      padding: 30px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+      border: 1px solid #2f3e56;
+    }
+
+    .category h2 {
+      color: var(--azul-neon);
+      margin-bottom: 25px;
+      font-size: 2rem;
+      border-bottom: 2px solid #2f3e56;
+      padding-bottom: 12px;
+    }
+
+    /* Cards de Comando */
+    .command-card {
+      background: var(--bg-card-light);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+      border: 1px solid transparent;
+    }
+
+    .command-card:hover { 
+      transform: translateY(-4px); 
+      box-shadow: 0 12px 20px rgba(0,0,0,0.3);
+      border-color: var(--azul-neon);
+    }
+
+    .command-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    /* Estilo do Bloco de Código do Comando */
+    .command-syntax {
+      font-family: 'Courier New', Courier, monospace;
+      background: #11111a;
+      color: #f472b6; /* Cor rosa/roxa estilo terminal/chat do jogo */
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 1.1rem;
+      border: 1px solid #2a2a3a;
+    }
+
+    .command-card p {
+      color: #cbd5e1;
+      font-size: 1rem;
+    }
+
+    /* Tags */
+    .tag {
+      display: inline-block;
+      background: var(--bg-principal);
+      color: var(--azul-neon);
+      border-radius: 6px;
+      padding: 4px 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .tag-admin { color: #f87171; } /* Vermelho para comandos pesados */
+
+    footer {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--texto-mutado);
+      border-top: 1px solid #1e293b;
+    }
+
+    @media (max-width: 600px) {
+      .command-header { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>📜 Lista de Comandos</h1>
+  <p>Comandos essenciais para Administração e Sobrevivência no Minecraft</p>
+</header>
+
+<nav>
+  <a href="index.html">⚒️ Receitas de Crafting</a>
+  <a href="#essenciais">⭐ Essenciais</a>
+  <a href="#mundo">🌍 Mundo & Tempo</a>
+  <a href="#itens">📦 Itens & Efeitos</a>
+  <a href="#admin">👑 Administração</a>
+</nav>
+
+<div class="container">
+
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="Digite o nome ou a função do comando para buscar..." />
+  </div>
+
+  <div class="category" id="essenciais">
+    <h2>⭐ Comandos Essenciais</h2>
+
+    <div class="command-card">
+      <div class="command-header">
+        <div class="command-syntax">/gamemode &lt;modo&gt;</div>
+        <span class="tag">Modo de Jogo</span>
+      </div>
+      <p>Altera o modo de jogo. Opções: <code>survival</code> (sobrevivência), <code>creative</code> (criativo), <code>adventure</code> (aventura) ou <code>spectator</code> (espectador).</p>
+    </div>
+
+    <div class="command-card">
+      <div class="command-header">
+        <div class="command-syntax">/tp &lt;jogador&gt; &lt;x&gt; &lt;y&gt; &lt;z&gt;</div>
+        <span class="tag">Teleporte</span>
+      </div>
+      <p>Teletransporta uma entidade ou jogador para coordenadas específicas ou para a localização de outro jogador.</p>
+    </div>
+
+    <div class="command-card">
+      <div class="command-header">
+        <div class="command-syntax">/spawnpoint</div>
+        <span class="tag">Utilidade</span>
+      </div>
+      <p>Define o ponto de renascimento (spawn) do jogador exatamente no local onde ele está pisando.</p>
+    </div>
+  </div>
+
+  <div class="category" id="mundo">
+    <h2>🌍 Mundo & Tempo</h2>
+
+    <div class="command-card">
+      <div class="command-header">
+        <div class="command-syntax">/time set &lt;hora&gt;</div>
+        <span class="tag">Tempo</span>
+      </div>
+      <p>Muda o horário do mundo. Exemplo de argumentos: <code>day</code> (dia), <code>night</code> (noite), <code>midnight</code> (meia-noite) ou números como <code>1000</code>.</p>
+    </div>
+
+    <div class="command-card">
+      <div class="command-header">
+        <div class="command-syntax">/weather &lt;tipo&gt;</div>
+        <span class="tag">Clima</span>
+      </div>
+      <p>Altera as condições climáticas atuais. Opções: <code>clear</code> (tempo limpo), <code>rain</code> (chuva) ou <code>thunder</code> (tempestade).</p>
+    </div>
+
+    <div class="command-card">
+      <div class="command-header">
+        <div class="command-syntax">/gamerule keepInventory true</div>
+        <span class="tag">Regra do Mundo</span>
+      </div>
+      <p>Ativa a regra que impede o jogador de perder os seus itens e a sua experiência ao morrer no jogo.</p>
+    </div>
+  </div>
+
+  <div class="category" id="itens">
+    <h2>📦 Itens & Efeitos</h2>
+
+    <div class="command-card">
+      <div class="command-header">
+        <div class="command-syntax">/give &lt;jogador&gt; &lt;item&gt; [quantidade]</div>
+        <span class="tag">Inventário</span>
+      </div>
+      <p>Adiciona um item específico diretamente ao inventário do jogador selecionado. Exemplo: <code>/give @p minecraft:diamond 64</code>.</p>
+    </div>
+
+    <div class="command-card">
+      <div class="command-header">
+        <div class="command-syntax">/effect give &lt;jogador&gt; &lt;efeito&gt; [tempo] [nível]</div>
+        <span class="tag">Status</span>
+      </div>
+      <p>Concede efeitos de poção ao jogador. Exemplo: <code>night_vision</code> (visão noturna) ou <code>strength</code> (força).</p>
+    </div>
+
+    <div class="command-card">
+      <div class="command-header">
+        <div class="command-syntax">/enchant &lt;jogador&gt; &lt;encantamento&gt; [nível]</div>
+        <span class="tag">Upgrade</span>
+      </div>
+      <p>Encanta o item que o jogador está a segurar na mão no momento da execução do comando.</p>
+    </div>
+  </div>
+
+  <div class="category" id="admin">
+    <h2>👑 Administração</h2>
+
+    <div class="command-card">
+      <div class="command-header">
+        <div class="command-syntax">/op &lt;jogador&gt;</div>
+        <span class="tag tag-admin">Permissão</span>
+      </div>
+      <p>Concede privilégios de Operador (administrador) a um jogador em servidores ou mundos em LAN.</p>
+    </div>
+
+    <div class="command-card">
+      <div class="command-header">
+        <div class="command-syntax">/kick &lt;jogador&gt; [motivo]</div>
+        <span class="tag tag-admin">Moderação</span>
+      </div>
+      <p>Desconecta à força um jogador do servidor de forma instantânea.</p>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  Guia de Comandos do Pedro's Games • <a href="index.html" style="color:var(--azul-neon);">← Voltar para Receitas</a>
+</footer>
+
+<script>
+  // Filtro de Busca Fluido em JavaScript
+  const searchInput = document.getElementById('searchInput');
+  searchInput.addEventListener('input', function () {
+    const filter = searchInput.value.toLowerCase();
+    const cards = document.querySelectorAll('.command-card');
+    
+    cards.forEach(card => {
+      const match = card.innerText.toLowerCase().includes(filter);
+      card.style.display = match ? 'flex' : 'none';
+    });
+  });
+</script>
+
+</body>
+</html>
